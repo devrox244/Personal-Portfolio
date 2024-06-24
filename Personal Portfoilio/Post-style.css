@@ -1,0 +1,74 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: black;
+    color: white;
+}
+
+.Header{
+    color: red; 
+    width: max-content; 
+    margin: 10px auto;
+}
+
+.InputForm {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    margin: 50px auto;
+    border: 2px solid white;
+    padding: 20px;
+    text-align: center;
+}
+
+.InputForm .heading {
+    color: red;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: red;
+}
+
+.form-group input[type="text"],
+.form-group select,
+.form-group input[type="file"],
+.form-group textarea,
+.form-group button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 2px solid white;
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+}
+
+.form-group button {
+    background-color: red;
+    color: black;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-group button:hover {
+    background-color: darkred;
+}
+
+textarea {
+    resize: none;
+}
