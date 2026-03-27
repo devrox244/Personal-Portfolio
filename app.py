@@ -51,10 +51,22 @@ def home():
     
     # Default values so the site doesn't look empty the first time
     defaults = {
-        "about": "Aspiring Embedded Systems...",
-        "skills": "<li>Python</li><li>IoT</li>",
-        "experience": "<li>Internship...</li>",
-        "education": "<li>University...</li>"
+        "about": "Final-year B.Tech Computer Science & Engineering (IoT) student at Manipal University Jaipur with a strong foundation in Generative AI, Computer Vision, and Web Development. Published researcher in real-time threat detection and experienced in building intelligent applications using YOLO, Gemini, and Retrieval-Augmented Generation (RAG) workflows. Proven ability to deploy ML-powered solutions on edge devices and full-stack environments.",
+        "skills": """
+                    <li>Generative AI: Agentic AI, Model Context Protocol (MCP) Servers, Retrieval Augmented Generation (RAG).</li>
+                    <li>Machine Learning & CV: OpenCV, YOLOv8, YOLOv11, TensorFlow.</li>
+                    <li>Programming & Databases: Python (Data Science, AI), Flask, NodeJS, MySQL, Pinecone, FAISS, SQLAlchemy.</li>
+                    <li>Embedded Systems & IoT: Raspberry Pi 3b, Arduino UNO, Jetson Nano.</li>
+                """,
+        "experience": """
+                        <li>Softapper | Web Development Intern, Bangalore, Karnataka | May 2024 - June 2024</li>
+                        <li>Healthark Insights | Trainee Analyst, Ahmedabad, Gujarat | June 2025 - August 2025</li>
+                        <li>Aaroha | RPA Developer (Project-Lead) | October 2025 - November 2025</li>
+                    """,
+        "education": """
+                        <li>B.Tech in Computer Science & Engineering (IoT) | Manipal University Jaipur | GPA: 8.24 (till 7th Semester) | Expected Completion: April 2026</li>
+                        <li>Intermediate (PCM) | FIIT-JEE World School, Hyderabad | Score: 86%</li>
+                    """
     }
     # Merge defaults with DB values
     data = {key: sections.get(key, defaults[key]) for key in defaults}
