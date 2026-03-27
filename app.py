@@ -32,15 +32,34 @@ class Achievement(db.Model):
     date = db.Column(db.String(50), nullable=False)
     image = db.Column(db.String(500), nullable=False) # Increased length for long URLs
 
+# Changing the Profile Descriptions requires an additional db
+class ProfileSection(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False) # 'skills', 'experience', etc.
+    content = db.Column(db.Text, nullable=False) # We will store HTML or JSON here
+
 # Create the database
 with app.app_context():
     db.create_all()
 
-# home route
+# In your home route, fetch these and send them to the template
 @app.route("/")
 def home():
     achievements = Achievement.query.all()
-    return render_template("index.html", achievements=achievements, admin=session.get("logged_in"))
+    # Get profile data or provide defaults if the DB is empty
+    sections = {s.name: s.content for s in ProfileSection.query.all()}
+    
+    # Default values so the site doesn't look empty the first time
+    defaults = {
+        "about": "Aspiring Embedded Systems...",
+        "skills": "<li>Python</li><li>IoT</li>",
+        "experience": "<li>Internship...</li>",
+        "education": "<li>University...</li>"
+    }
+    # Merge defaults with DB values
+    data = {key: sections.get(key, defaults[key]) for key in defaults}
+    
+    return render_template("index.html", achievements=achievements, admin=session.get("logged_in"), profile=data)
 
 # Login
 @app.route("/login", methods=["GET", "POST"])
@@ -61,6 +80,24 @@ def login():
 def logout():
     session.pop("logged_in", None)
     return redirect(url_for("home"))
+
+# route to save section edits
+@app.route("/save_section", methods=["POST"])
+def save_section():
+    if not session.get("logged_in"):
+        return jsonify({"status": "fail"}), 401
+    
+    data = request.json
+    section = ProfileSection.query.filter_by(name=data['name']).first()
+    
+    if section:
+        section.content = data['content']
+    else:
+        section = ProfileSection(name=data['name'], content=data['content'])
+        db.session.add(section)
+        
+    db.session.commit()
+    return jsonify({"status": "success"})
 
 # --- Helper Function ---
 def fix_drive_link(url):

@@ -33,6 +33,25 @@ form.addEventListener('submit', e => {
             .catch(error => console.error('Error!', error.message))
 })
 
+// saves the edited content
+function saveSection(sectionName, elementId) {
+    const element = document.getElementById(elementId);
+    const content = element.innerHTML; // Saves the <li> tags exactly as they are
+
+    fetch('/save_section', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: sectionName, content: content })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.status === 'success') {
+            alert(sectionName + " updated permanently!");
+        }
+    })
+    .catch(err => console.error("Save failed:", err));
+}
+
 function openAchievementForm() {
     let form = document.getElementById("achievement-form");
     let overlay = document.getElementById("popup-overlay");

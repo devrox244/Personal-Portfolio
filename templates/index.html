@@ -4,11 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Devadyumna's Portfolio</title>
-    <link rel="stylesheet" href="static\styles.css" />
+    <link rel="stylesheet" href="static/styles.css" />
   </head>
 
   <body>
-    <!-- nav-bar -->
     <header>
       <nav class="navi-bar">
         <div class="name">Devadyumna Vijay Kumar</div>
@@ -30,8 +29,6 @@
 
     <div style="width: 100%; border: 1px solid red;"></div>
 
-    <!-- home section -->
-
     <div class="home" id="home">
       <div class="intro">
         <p>
@@ -44,8 +41,6 @@
       </div>
     </div>
 
-    <!-- about section -->
-
     <div class="about" id="about">
       <div class="container">
         <div class="row">
@@ -54,69 +49,63 @@
           </div>
           <div class="col-2">
             <h1>About Me</h1>
-            <p contenteditable="{{ admin }}">Aspiring Embedded Systems & IoT Developer with hands-on experience in Raspberry Pi, Arduino, and hardware-software integration. Passionate about avionics, aerospace technology, and building real-world applications. Skilled in problem-solving, system design, and AI-driven IoT solutions. Constantly pushing boundaries to innovate and contribute to cutting-edge technology.</p>
+            <p id="about-me" contenteditable="{{ admin }}">
+              {{ profile.about }}
+            </p>
+            {% if admin %}
+              <button class="save-btn" onclick="saveSection('about', 'about-me')">Save About Me</button>
+            {% endif %}
+
             <div class="tab-titles">
               <h5 class="tab-links active-title" onclick="opencon('skill')">Skill</h5>
               <h5 class="tab-links" onclick="opencon('education')">Education</h5>
               <h5 class="tab-links" onclick="opencon('experience')">Experience</h5>
             </div>
             <hr>
-            <!-- Editable Skills -->
+            
             <div class="tab-content active-tab" id="skill">
-              <ul contenteditable="{{ admin }}">
-                <!-- Makes list editable if logged in -->
-                <li>Full Stack Development</li>
-                <li>Embedded Systems</li>
-                <li>Python</li>
-                <li>Raspberry Pi & Arduino</li>
-                <li>Avionics & Aerospace Systems</li>
+              <ul id="editable-skills" contenteditable="{{ admin }}">
+                {{ profile.skills | safe }}
               </ul>
+              {% if admin %}
+                <button class="save-btn" onclick="saveSection('skills', 'editable-skills')">Save Skills</button>
+              {% endif %}
             </div>
 
-            <!-- Editable Experience -->
             <div class="tab-content" id="experience">
-              <ul contenteditable="{{ admin }}">
-                <li>
-                  Wizgrad Internship | Full Stack Development | Feb - March, 2024
-                </li>
-                <li>
-                  Softapper | Full Stack Development | May 2024 - present
-                </li>
+              <ul id="editable-experience" contenteditable="{{ admin }}">
+                {{ profile.experience | safe }}
               </ul>
+              {% if admin %}
+                <button class="save-btn" onclick="saveSection('experience', 'editable-experience')">Save Experience</button>
+              {% endif %}
             </div>
 
-            <!-- Editable Education -->
             <div class="tab-content" id="education">
-              <ul contenteditable="{{ admin }}">
-                <li>
-                  Fiitjee World School<br />11th - 12th <br />2020 - 2022
-                </li>
-                <li>
-                  Manipal University Jaipur <br />B.Tech CSE with IoT (Hons) <br />2022 - present
-                </li>
+              <ul id="editable-education" contenteditable="{{ admin }}">
+                {{ profile.education | safe }}
               </ul>
+              {% if admin %}
+                <button class="save-btn" onclick="saveSection('education', 'editable-education')">Save Education</button>
+              {% endif %}
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- achievements and posts section -->
     <div class="ach-pos" id="posts">
       <div class="add">
         <h1>Achievements and Posts</h1>
-
         {% if admin %}
           <a class="add-button"><button class="add-btn" name="add" onclick="openAchievementForm()">+ New</button></a>
         {% endif %}
       </div>
 
-      <!-- Popup Background Overlay -->
       <div id="popup-overlay" onclick="closeAchievementForm()"></div>
 
-      <!-- Achievement Form Popup -->
       <div id="achievement-form">
-        <form action="/add_achievement" method="post" enctype="multipart/form-data">
+        <form action="/add_achievement" method="post">
           <h2>Add New Achievement</h2>
           <button type="button" class="close-btn" onclick="closeAchievementForm()">✖</button>
           <input type="text" name="name" placeholder="Enter Achievement Title" class="form-input" required />
@@ -131,7 +120,7 @@
         {% for achievement in achievements %}
           <a class="card-link">
             <div class="card">
-              <img src="static/uploads/{{ achievement.image }}" alt="{{ achievement.name }}" />
+              <img src="{{ achievement.image }}" alt="{{ achievement.name }}" />
               <div class="card-body">
                 <h4>{{ achievement.name }}</h4>
                 <hr>
@@ -147,42 +136,33 @@
       </div>
     </div>
 
-    <!-- Edit Achievement Popup Form -->
     <div id="edit-achievement-form" class="popup">
-      <form id="edit-form" action="/edit_achievement" method="post" enctype="multipart/form-data">
+      <form id="edit-form" action="/edit_achievement" method="post">
         <h2>Edit Achievement</h2>
         <button type="button" class="close-btn" onclick="closeEditForm()">✖</button>
-
-        <input type="hidden" name="id" id="edit-id" /> <!-- Hidden field for ID -->
+        <input type="hidden" name="id" id="edit-id" />
         <input type="text" name="name" id="edit-name" placeholder="Title" class="form-input" required />
         <input type="text" name="description" id="edit-description" placeholder="Description" class="form-input" required />
         <input type="date" name="date" id="edit-date" class="form-input" required />
-        <input type="file" name="image" id="edit-image" class="form-input" />
-
+        <input type="text" name="image_url" id="edit-image-url" placeholder="Update Drive Image Link" class="form-input" />
         <button type="submit" class="submit-btn">Update Achievement</button>
       </form>
     </div>
 
-    <!-- achievements button -->
     <button id="toggle-btn" onclick="toggleAchievements()">Show More</button>
 
     <div style="width: 100%; border: 1px solid red;"></div>
-    <!-- Contact me -->
 
     <div class="Contact" id="contact">
       <div class="ContactInfo">
         <h1>Contact Me</h1>
-        <p>
-          <i class="fa-solid fa-envelope"></i> devadyumavijay@outlook.com
-        </p>
-        <p>
-          <i class="fa-solid fa-phone"></i> +91 89059 59835
-        </p>
+        <p><i class="fa-solid fa-envelope"></i> devadyumavijay@outlook.com</p>
+        <p><i class="fa-solid fa-phone"></i> +91 89059 59835</p>
         <div class="SocialIcons">
-          <a href="https://www.instagram.com/devadyumnavijay_3750?igsh=MWJuM2E4bjgyYm51Zg=="><i class="fa-brands fa-instagram"></i></a>
-          <a href="https://www.linkedin.com/in/devadyumna-vijay-kumar-667633250?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="https://www.instagram.com/devadyumnavijay_3750"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/in/devadyumna-vijay-kumar-667633250"><i class="fa-brands fa-linkedin"></i></a>
         </div>
-        <a href="" download><button class="resume-btn">Download Resume</button></a>
+        <a href="#" download><button class="resume-btn">Download Resume</button></a>
       </div>
 
       <div class="ContactForm">
@@ -196,9 +176,7 @@
     </div>
 
     <div class="copyright">
-      <p>
-        All rights reserved&copy. <br />Made by Devadyumna Vijay Kumar.
-      </p>
+      <p>All rights reserved&copy. <br />Made by Devadyumna Vijay Kumar.</p>
     </div>
 
     <script src="https://kit.fontawesome.com/bd8c73bde2.js" crossorigin="anonymous"></script>
