@@ -15,7 +15,7 @@ ADMIN_USERNAME = os.getenv("USERNAME")
 ADMIN_PASSWORD = os.getenv("PASSWORD")
 
 # SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("INTERNAL_DB_URL", 'sqlite:///database.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_URL", 'sqlite:///database.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Upload folder for achievements
