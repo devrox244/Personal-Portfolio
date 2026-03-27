@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
+import re
 
 load_dotenv(".env")
 
@@ -61,6 +62,20 @@ def logout():
     session.pop("logged_in", None)
     return redirect(url_for("home"))
 
+# --- Helper Function ---
+def fix_drive_link(url):
+    """
+    Converts a standard Google Drive share link into a direct image link
+    that works in <img> tags.
+    """
+    if 'drive.google.com' in url:
+        # Extracts the ID between /d/ and the next /
+        match = re.search(r'/d/([^/]+)', url)
+        if match:
+            file_id = match.group(1)
+            return f'https://drive.google.com/uc?export=view&id={file_id}'
+    return url
+
 # get achievements
 @app.route("/achievements", methods=["GET"])
 def get_achievements():
@@ -73,21 +88,21 @@ def get_achievements():
         "image": a.image
     } for a in achievements])
 
-# add achievements
+# --- Updated Add Route ---
 @app.route("/add_achievement", methods=["POST"])
 def add_achievement():
     if "logged_in" not in session or not session["logged_in"]:
         return redirect(url_for("login"))
 
     if request.method == "POST":
-        # We now expect a URL string from the form, not a file
-        image_url = request.form["image_url"] 
+        raw_url = request.form["image_url"]
+        clean_url = fix_drive_link(raw_url) # Process the link here
 
         new_achievement = Achievement(
             name=request.form["name"],
             description=request.form["description"],
             date=request.form["date"],
-            image=image_url
+            image=clean_url
         )
 
         db.session.add(new_achievement)
@@ -114,20 +129,23 @@ def delete_achievement(id):
 
     return jsonify({"error": "Achievement not found"}), 404
 
-# Edit Achievement Route
+# --- Updated Edit Route ---
 @app.route("/edit_achievement", methods=["POST"])
 def edit_achievement():
     if "logged_in" not in session or not session["logged_in"]:
         return redirect(url_for("login"))
 
-    achievement = Achievement.query.get(request.form["id"])
+    achievement_id = request.form["id"]
+    achievement = Achievement.query.get(achievement_id)
+
     if achievement:
         achievement.name = request.form["name"]
         achievement.description = request.form["description"]
         achievement.date = request.form["date"]
-        # Update the URL
-        if request.form.get("image_url"):
-            achievement.image = request.form["image_url"]
+
+        if "image_url" in request.form and request.form["image_url"]:
+            # Process the link if the user updated it
+            achievement.image = fix_drive_link(request.form["image_url"])
 
         db.session.commit()
     
